@@ -16,9 +16,9 @@ def event_handler_main(in_json_str):
     response_actions = []
 
     for p in paths:
-      if p['path']['value'] == "up":
+      if p['value'] == "up":
         uplink = p['path'].split(' ')[1]
-        response_actions.append( [
+        response_actions += [
             {
                 "set-ephemeral-path": {
                     "path": f"interface {uplink} ethernet l2cp-transparency tunnel-all-l2cp",
@@ -30,21 +30,19 @@ def event_handler_main(in_json_str):
                     "path": f"system lldp interface {uplink} admin-state",
                     "value": "disable" if lldp else "enable",
                 }
-            },
-            ]
-        )
+            }
+        ]
         if not lldp:
-            response_actions.append( [
-              {
-                "persistent-data": {
-                 "lldp" : "enabled"
-                },
-              },
+            response_actions += [
+              #{
+              #    "persistent-data": {
+              #     "lldp" : "enabled"
+              #    },
+              # },
               {
                 "reinvoke-with-delay": 60000 # Could make configurable in config
               }
-             ]
-            )
+            ]
 
     response = {"actions": response_actions}
     return json.dumps(response)
