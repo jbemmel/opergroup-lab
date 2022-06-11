@@ -15,8 +15,9 @@ def event_handler_main(in_json_str):
 
     response_actions = []
 
-    # TODO read from paths of event
-    for uplink in options.get("up-links", []):
+    for p in paths:
+      if p['path']['value'] == "up":
+        uplink = p['path'].split(' ')[1]
         response_actions.append( [
             {
                 "set-ephemeral-path": {
