@@ -35,10 +35,14 @@ def event_handler_main(in_json_str):
         )
         if not lldp:
             response_actions.append( [
+              {
                 "persistent-data": {
                  "lldp" : "enabled"
                 },
+              },
+              {
                 "reinvoke-with-delay": 60000 # Could make configurable in config
+              }
              ]
             )
 
