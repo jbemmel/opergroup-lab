@@ -5,7 +5,7 @@ enter candidate
 /system event-handler instance brief_lldp_on_uplinks
 admin-state enable
 upython-script lldp_before_l2cp.py
-paths [
+path [
  "interface ethernet-1/{49..50} oper-state"
 ]
 options {
