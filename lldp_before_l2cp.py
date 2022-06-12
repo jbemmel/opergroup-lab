@@ -1,4 +1,3 @@
-import sys
 import json
 
 # main entry function for event handler
@@ -31,13 +30,6 @@ def event_handler_main(in_json_str):
                  "value": reinvoked,
              }
             },
-
-            # {
-            #     "set-ephemeral-path": {
-            #         "path": f"interface {uplink} oper-state",
-            #         "value": "down",
-            #     }
-            # }
         ]
         if not reinvoked:
             response_actions += [
@@ -49,38 +41,3 @@ def event_handler_main(in_json_str):
 
     response = {"actions": response_actions, "persistent-data": { "reinvoked": reinvoked } }
     return json.dumps(response)
-
-
-#
-# This code is only if you want to test it from bash - this isn't used when invoked from SRL
-#
-def main():
-    example_in_json_str = """
-{
-    "paths": [
-        {
-            "path":"interface ethernet-1/49 oper-status",
-            "value":"down"
-        },
-        {
-            "path":"interface ethernet-1/50 oper-status",
-            "value":"down"
-        }
-    ],
-    "options": {
-        "required-up-uplinks":1,
-        "down-links": [
-            "Ethernet-1/1",
-            "Ethernet-1/2"
-        ],
-        "debug": "true"
-    },
-    "persistent-data": {"last-state":"up"}
-}
-"""
-    json_response = event_handler_main(example_in_json_str)
-    print(f"Response JSON:\n{json_response}")
-
-
-if __name__ == "__main__":
-    sys.exit(main())
