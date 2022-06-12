@@ -6,7 +6,8 @@ enter candidate
 admin-state enable
 upython-script lldp_before_l2cp.py
 path [
- "interface ethernet-1/49 oper-state"
+ "interface ethernet-1/49 oper-state",
+ "system lldp interface ethernet-1/49"
 ]
 options { object debug { value true } }
 
@@ -14,7 +15,8 @@ options { object debug { value true } }
 admin-state enable
 upython-script lldp_before_l2cp.py
 path [
- "interface ethernet-1/50 oper-state"
+ "interface ethernet-1/50 oper-state",
+ "system lldp interface ethernet-1/50"
 ]
 options { object debug { value true } }
 commit stay
