@@ -19,24 +19,25 @@ def event_handler_main(in_json_str):
       if p['value'] == "up":
         uplink = p['path'].split(' ')[1]
         response_actions += [
+            {
+             "set-cfg-path": {
+                 "path": f"system lldp interface {uplink} admin-state",
+                 "value": "disable" if reinvoked else "enable",
+             }
+            },
+            {
+             "set-cfg-path": {
+                 "path": f"interface {uplink} ethernet l2cp-transparency tunnel-all-l2cp",
+                 "value": reinvoked,
+             }
+            },
+
             # {
             #     "set-ephemeral-path": {
-            #         "path": f"interface {uplink} ethernet l2cp-transparency tunnel-all-l2cp",
-            #         "value": lldp,
-            #     }
-            # },
-            # {
-            #     "set-ephemeral-path": {
-            #         "path": f"system lldp interface {uplink} admin-state",
-            #         "value": "disable" if lldp else "enable",
+            #         "path": f"interface {uplink} oper-state",
+            #         "value": "down",
             #     }
             # }
-            {
-                "set-ephemeral-path": {
-                    "path": f"interface {uplink} oper-state",
-                    "value": "down",
-                }
-            }
         ]
         if not reinvoked:
             response_actions += [
