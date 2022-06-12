@@ -38,6 +38,8 @@ def event_handler_main(in_json_str):
               }
             ]
             reinvoked = True
+      else:
+        reinvoked = False # reset state
 
     response = {"actions": response_actions, "persistent-data": { "reinvoked": reinvoked } }
     return json.dumps(response)
