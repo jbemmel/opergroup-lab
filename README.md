@@ -2,16 +2,20 @@
 
 ```
 enter candidate
-/system event-handler instance brief_lldp_on_uplinks
+/system event-handler instance brief_lldp_on_uplink_49
 admin-state enable
 upython-script lldp_before_l2cp.py
 path [
- "interface ethernet-1/{49..50} oper-state"
+ "interface ethernet-1/49 oper-state"
 ]
-options {
- object debug {
-  value true
- }
-}
+options { object debug { value true } }
+
+/system event-handler instance brief_lldp_on_uplink_50
+admin-state enable
+upython-script lldp_before_l2cp.py
+path [
+ "interface ethernet-1/50 oper-state"
+]
+options { object debug { value true } }
 commit stay
 ```
