@@ -7,6 +7,7 @@ admin-state enable
 upython-script lldp_before_l2cp.py
 path [
  "interface ethernet-1/49 oper-state"
+ "system lldp interface ethernet-1/49 neighbor * system-name"
 ]
 options { object debug { value true } }
 
@@ -15,6 +16,7 @@ admin-state enable
 upython-script lldp_before_l2cp.py
 path [
  "interface ethernet-1/50 oper-state"
+ "system lldp interface ethernet-1/50 neighbor * system-name"
 ]
 options { object debug { value true } }
 commit stay
