@@ -30,6 +30,12 @@ def event_handler_main(in_json_str):
                  "value": reinvoked,
              }
             },
+            {
+             "set-cfg-path": { # Disable OSPF while waiting for LLDP to complete discovery
+                 "path": f"network-instance default protocols ospf instance main area 0.0.0.0 interface {uplink} admin-state",
+                 "value": "enable" if reinvoked else "disable",
+             }
+            },
         ]
         if not reinvoked:
             response_actions += [
@@ -38,8 +44,17 @@ def event_handler_main(in_json_str):
               }
             ]
             reinvoked = True
-      else:
+      elif p['value'] == "down":
         reinvoked = False # reset state
+      else: # LLDP system name, TODO add port name
+        response_actions += [
+            {
+             "set-cfg-path": {
+                 "path": f"interface {uplink} description",
+                 "value": p['value'],
+             }
+            },
+        ]
 
     response = {"actions": response_actions, "persistent-data": { "reinvoked": reinvoked } }
     return json.dumps(response)
