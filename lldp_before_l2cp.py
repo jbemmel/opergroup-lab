@@ -22,10 +22,13 @@ def event_handler_main(in_json_str):
        print( in_json_str )
 
     response_actions = []
+    system_name = ""
+    port_id = ""
 
     for p in paths:
+      path_parts = p['path'].split(' ')
       if p['value'] == "up":
-        uplink = p['path'].split(' ')[1]
+        uplink = path_parts[1]
         response_actions += [
             {
              "set-cfg-path": {
@@ -41,7 +44,7 @@ def event_handler_main(in_json_str):
             },
             {
              "set-cfg-path": { # Disable OSPF while waiting for LLDP to complete discovery
-                 "path": f"network-instance default protocols ospf instance main area 0.0.0.0 interface {uplink} admin-state",
+                 "path": f"network-instance default protocols ospf instance main area 0.0.0.0 interface {uplink}.0 admin-state",
                  "value": "enable" if reinvoked else "disable",
              }
             },
@@ -55,15 +58,24 @@ def event_handler_main(in_json_str):
             reinvoked = True
       elif p['value'] == "down":
         reinvoked = False # reset state
-      else: # LLDP system name, TODO add port name
-        response_actions += [
-            {
-             "set-cfg-path": {
-                 "path": f"interface {uplink} description",
-                 "value": p['value'],
-             }
-            },
-        ]
+      elif path_parts[-1] == 'system-name': # LLDP system name or port-id
+        uplink = path_parts[3] # 'system lldp interface XYZ'
+        peer_mac = path_parts[5]
+        system_name = p['value']
+      elif path_parts[-1] == 'port-id': # LLDP system name or port-id
+        uplink = path_parts[3] # 'system lldp interface XYZ'
+        peer_mac = path_parts[5]
+        port_id = p['value']
+
+    if system_name or port_id:
+     response_actions += [
+        {
+         "set-cfg-path": {
+             "path": f"interface {uplink} description",
+             "value": f"{system_name} {port_id} MAC={peer_mac}",
+         }
+        },
+     ]
 
     response = {"actions": response_actions, "persistent-data": { "reinvoked": reinvoked } }
     return json.dumps(response)
