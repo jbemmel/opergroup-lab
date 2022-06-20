@@ -8,6 +8,7 @@ upython-script lldp_before_l2cp.py
 path [
  "interface ethernet-1/49 oper-state"
  "system lldp interface ethernet-1/49 neighbor * system-name"
+ "system lldp interface ethernet-1/49 neighbor * port-id"
 ]
 options { object debug { value true } }
 
@@ -17,6 +18,7 @@ upython-script lldp_before_l2cp.py
 path [
  "interface ethernet-1/50 oper-state"
  "system lldp interface ethernet-1/50 neighbor * system-name"
+ "system lldp interface ethernet-1/50 neighbor * port-id"
 ]
 options { object debug { value true } }
 commit stay
