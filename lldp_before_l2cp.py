@@ -71,7 +71,7 @@ def event_handler_main(in_json_str):
      response_actions += [
         {
          "set-cfg-path": {
-             "path": f"interface {uplink} description",
+             "path": f"interface {uplink} subinterface 0 description",
              "value": f"{system_name} {port_id} MAC={peer_mac}",
          }
         },

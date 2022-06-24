@@ -1,0 +1,16 @@
+# See example_config.yml for an explanation of all the accepted fields
+lldp_agent:
+   path: /opt/lldp-agent
+   launch-command: false
+   search-command: python3 lldp-agent.py
+   wait-for-config: Yes
+   failure-threshold: 100
+   failure-action: wait=forever
+   author: 'Nokia'
+   version-command: ' echo 1.0'
+   yang-modules:
+       names:
+           - "interface-lldp"
+       source-directories:
+           - "/opt/lldp-agent/"
+           - "/opt/srlinux/models/srl_nokia/models/common/"

@@ -1,0 +1,40 @@
+module interface-lldp {
+
+    yang-version "1.1";
+
+    namespace "urn:srl_nokia_ext/interface-lldp";
+
+    prefix "if_lldp";
+
+    import srl_nokia-interfaces {
+        prefix srl_nokia-if;
+    }
+
+    revision "2022-06-21" {
+        description "Initial revision";
+        reference "TBD";
+    }
+
+    augment "/srl_nokia-if:interface" {
+        container lldp-peer {
+          presence "LLDP information from peer";
+          config true;
+
+          leaf system-name {
+           type string {
+             length "0..255";
+           }
+          }
+
+          leaf chassis-id {
+           type string;
+          }
+
+          leaf port-id {
+           type string;
+          }
+
+        }
+    }
+
+}
