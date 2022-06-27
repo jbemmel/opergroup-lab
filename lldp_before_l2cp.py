@@ -7,7 +7,7 @@
 # FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import json
+import json, time
 
 # main entry function for event handler
 def event_handler_main(in_json_str):
@@ -43,11 +43,17 @@ def event_handler_main(in_json_str):
              }
             },
             {
-             "set-cfg-path": { # Disable OSPF while waiting for LLDP to complete discovery
-                 "path": f"network-instance default protocols ospf instance main area 0.0.0.0 interface {uplink}.0 admin-state",
-                 "value": "enable" if reinvoked else "disable",
+             "set-cfg-path": {
+                 "path": f"interface {uplink} ethernet l2cp-transparency lldp tunnel",
+                 "value": reinvoked,
              }
             },
+            # {
+            #  "set-cfg-path": { # Disable OSPF while waiting for LLDP to complete discovery
+            #      "path": f"network-instance default protocols ospf instance main area 0.0.0.0 interface {uplink}.0 admin-state",
+            #      "value": "enable" if reinvoked else "disable",
+            #  }
+            # },
         ]
         if not reinvoked:
             response_actions += [
@@ -68,11 +74,13 @@ def event_handler_main(in_json_str):
         port_id = p['value']
 
     if system_name or port_id:
+     t = time.gmtime() # in UTC
+     timestamp = '{:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d} UTC'.format(t[0], t[1], t[2], t[3], t[4], t[5])
      response_actions += [
         {
          "set-cfg-path": {
              "path": f"interface {uplink} subinterface 0 description",
-             "value": f"{system_name} {port_id} MAC={peer_mac}",
+             "value": f"{system_name}|{port_id}|{peer_mac}|{timestamp}",
          }
         },
      ]
