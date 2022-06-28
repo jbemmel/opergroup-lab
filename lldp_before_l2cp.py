@@ -73,7 +73,7 @@ def event_handler_main(in_json_str):
         peer_mac = path_parts[5]
         port_id = p['value']
 
-    if system_name or port_id:
+    if (system_name or port_id) and reinvoked:
      t = time.gmtime() # in UTC
      timestamp = '{:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d} UTC'.format(t[0], t[1], t[2], t[3], t[4], t[5])
      response_actions += [
