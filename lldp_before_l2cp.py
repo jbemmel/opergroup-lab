@@ -69,10 +69,10 @@ def event_handler_main(in_json_str):
           uplink = path_parts[3] # 'system lldp interface XYZ'
           peer_mac = path_parts[5]
 
-        if path_parts[-1] == 'system-name': # LLDP system name
-          system_name = p['value']
-        elif path_parts[-1] == 'port-id': # LLDP port-id
-          port_id = p['value']
+          if path_parts[-1] == 'system-name': # LLDP system name
+            system_name = p['value']
+          elif path_parts[-1] == 'port-id': # LLDP port-id
+            port_id = p['value']
 
     if (system_name or port_id) and reinvoked:
      t = time.gmtime() # in UTC
