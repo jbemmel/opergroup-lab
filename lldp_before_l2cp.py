@@ -65,7 +65,7 @@ def event_handler_main(in_json_str):
       elif p['value'] == "down":
         reinvoked = False # reset state
       elif path_parts[-1] in ['system-name','port-id']: # LLDP system name or port-id
-        if path_parts[5][:8] in [ '50:E0:EF', 'XX:XX:XX' ]: # SRL or Cumulus node
+        if path_parts[5][:8] in [ '50:E0:EF', '3C:2C:30' ]: # SRL or Cumulus node
           uplink = path_parts[3] # 'system lldp interface XYZ'
           peer_mac = path_parts[5]
 
