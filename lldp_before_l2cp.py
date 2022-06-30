@@ -74,7 +74,7 @@ def event_handler_main(in_json_str):
           elif path_parts[-1] == 'port-id': # LLDP port-id
             port_id = p['value']
 
-    if (system_name or port_id) and reinvoked:
+    if (system_name and port_id) and reinvoked:
      t = time.gmtime() # in UTC
      timestamp = '{:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d} UTC'.format(t[0], t[1], t[2], t[3], t[4], t[5])
      response_actions += [
