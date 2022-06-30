@@ -38,3 +38,5 @@ options { object debug { value true } }
 
 commit stay
 ```
+
+Note that there is a limit of 100 paths to monitor, and {1..50} keeps hanging in 'starting'
