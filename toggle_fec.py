@@ -36,6 +36,8 @@ def event_handler_main(in_json_str):
         uplinks_seen[ uplink ] = True
       elif p['value'] == "down":
         uplinks_seen[ uplink ] = False
+        if uplink in data:
+          del data[ uplink ]
       else:
         fec_state = p['value']
         prev_fec = data[ uplink ] if uplink in data else None
@@ -51,9 +53,12 @@ def event_handler_main(in_json_str):
               }
              },
             ]
+            data[ uplink ] = "toggled"
+        elif uplink in uplinks_seen and uplinks_seen[uplink]:
+          if prev_fec == "toggled":
             del data[ uplink ]
-        else if uplink in uplinks_seen and uplinks_seen[uplink]:
-          response_actions += [
+          else:
+            response_actions += [
              {
               "set-cfg-path": {
                  "path": f"interface {uplink} transceiver forward-error-correction",
@@ -63,8 +68,8 @@ def event_handler_main(in_json_str):
              {
               "reinvoke-with-delay": 1000 # After 1 second
              }
-          ]
-          data[ uplink ] = fec_state
+            ]
+            data[ uplink ] = fec_state
 
     response = {"actions": response_actions, "persistent-data": data }
     return json.dumps(response)
