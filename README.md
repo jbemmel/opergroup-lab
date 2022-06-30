@@ -30,11 +30,13 @@ enter candidate
 /system event-handler instance toggle_fec
 admin-state enable
 upython-script toggle_fec.py
-paths [
- "interface ethernet-1/* oper-state"
- "interface ethernet-1/* transceiver forward-error-correction"
+path [
+ "interface ethernet-1/{49..50} oper-state"
+ "interface ethernet-1/{49..50} transceiver forward-error-correction"
 ]
 options { object debug { value true } }
 
 commit stay
 ```
+
+Note that there is a limit of 100 paths to monitor, and {1..50} keeps hanging in 'starting'
