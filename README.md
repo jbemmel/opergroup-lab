@@ -31,8 +31,8 @@ enter candidate
 admin-state enable
 upython-script toggle_fec.py
 path [
- "interface ethernet-1/* oper-state"
- "interface ethernet-1/* transceiver forward-error-correction"
+ "interface ethernet-1/{1..50} oper-state"
+ "interface ethernet-1/{1..50} transceiver forward-error-correction"
 ]
 options { object debug { value true } }
 
