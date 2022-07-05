@@ -10,7 +10,10 @@ paths [
  "system lldp interface ethernet-1/49 neighbor * system-name"
  "system lldp interface ethernet-1/49 neighbor * port-id"
 ]
-options { object debug { value true } }
+options { 
+ object debug { value true } 
+ object peer-regex { value "spine.*" } 
+}
 
 /system event-handler instance brief_lldp_on_uplink_50
 admin-state enable
