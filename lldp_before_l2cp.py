@@ -7,7 +7,7 @@
 # FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import json, time
+import json, time, re
 
 # main entry function for event handler
 def event_handler_main(in_json_str):
@@ -15,15 +15,17 @@ def event_handler_main(in_json_str):
     in_json = json.loads(in_json_str)
     paths = in_json["paths"]
     options = in_json["options"]
-
+    debug = options.get("debug") == "true"
     reinvoked = "persistent-data" in in_json and in_json["persistent-data"]["reinvoked"]
 
-    if options.get("debug") == "true":
+    if debug:
        print( in_json_str )
 
+    peer_regex = options.get("peer-regex", ".*")
+    peer_match = re.compile( peer_regex )
+
     response_actions = []
-    system_name = ""
-    port_id = ""
+    peer_map = {}
 
     for p in paths:
       path_parts = p['path'].split(' ')
@@ -65,26 +67,29 @@ def event_handler_main(in_json_str):
       elif p['value'] == "down":
         reinvoked = False # reset state
       elif path_parts[-1] in ['system-name','port-id']: # LLDP system name or port-id
-        if path_parts[5][:8] in [ '50:E0:EF', '3C:2C:30' ]: # SRL or Cumulus node
-          uplink = path_parts[3] # 'system lldp interface XYZ'
-          peer_mac = path_parts[5]
+        uplink = path_parts[3] # 'system lldp interface XYZ'
+        peer_mac = path_parts[5]
+        if peer_mac not in peer_map:
+          peer_map[ peer_mac ] = {}
+        peer_map[ peer_mac ][ path_parts[-1] ] = p['value']
 
-          if path_parts[-1] == 'system-name': # LLDP system name
-            system_name = p['value']
-          elif path_parts[-1] == 'port-id': # LLDP port-id
-            port_id = p['value']
-
-    if (system_name and port_id) and reinvoked:
-     t = time.gmtime() # in UTC
-     timestamp = '{:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d} UTC'.format(t[0], t[1], t[2], t[3], t[4], t[5])
-     response_actions += [
-        {
-         "set-cfg-path": {
-             "path": f"interface {uplink} subinterface 0 description",
-             "value": f"{system_name}|{port_id}|{peer_mac}|{timestamp}",
-         }
-        },
-     ]
+    if len(peer_map) > 0 and reinvoked:
+      for peer_mac,d in peer_map.items():
+        if 'system-name' in d and peer_match.match( d['system-name'] ):
+          if debug:
+            print( f"Found matching LLDP based on regex '{peer_regex}': {d['system-name']}" )
+          t = time.gmtime() # in UTC
+          timestamp = '{:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d} UTC'.format(t[0], t[1], t[2], t[3], t[4], t[5])
+          port_id = d[ 'port-id' ] if 'port-id' in d else ""
+          response_actions += [
+             {
+              "set-cfg-path": {
+                  "path": f"interface {uplink} subinterface 0 description",
+                  "value": f"{d['system-name']}|{port_id}|{peer_mac}|{timestamp}",
+              }
+             },
+          ]
+          break
 
     response = {"actions": response_actions, "persistent-data": { "reinvoked": reinvoked } }
     return json.dumps(response)
