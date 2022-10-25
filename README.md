@@ -12,7 +12,8 @@ paths [
 ]
 options { 
  object debug { value true } 
- object peer-regex { value "spine.*" } 
+ object peer-regex { value "spine.*" }
+ object peer-interface-regex { value "ethernet-1/(49|50)" }
 }
 
 /system event-handler instance brief_lldp_on_uplink_50
