@@ -17,7 +17,7 @@
 #                admin-state enable
 #                upython-script backup_config.py
 #                paths [
-#                    "system configuration last-change",
+#                    "system configuration last-change"
 #                    "system aaa authentication session * username"
 #                ]
 #                options {
